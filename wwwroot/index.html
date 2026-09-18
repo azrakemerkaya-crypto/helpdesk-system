@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Helpdesk System</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Teknik Servis ve Talep Takip Sistemi</h1>
+    <div id="userBox">
+      <span id="userName">Misafir</span>
+      <button id="logoutBtn" class="secondary hidden">Çıkış</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="authSection" class="panel">
+      <h2>Giriş / Kayıt</h2>
+      <div class="auth-grid">
+        <form id="registerForm">
+          <h3>Kayıt Ol</h3>
+          <input type="text" id="registerName" placeholder="Ad Soyad" required />
+          <input type="email" id="registerEmail" placeholder="E-posta" required />
+          <input type="password" id="registerPassword" placeholder="Şifre" required />
+          <button type="submit">Kayıt Ol</button>
+        </form>
+
+        <form id="loginForm">
+          <h3>Giriş Yap</h3>
+          <input type="email" id="loginEmail" placeholder="E-posta" required />
+          <input type="password" id="loginPassword" placeholder="Şifre" required />
+          <button type="submit">Giriş Yap</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="dashboardSection" class="hidden">
+      <div class="stats">
+        <div class="stat"><span>Toplam</span><strong id="totalCount">0</strong></div>
+        <div class="stat"><span>Açık</span><strong id="openCount">0</strong></div>
+        <div class="stat"><span>Atanmış</span><strong id="assignedCount">0</strong></div>
+        <div class="stat"><span>Çözülmüş</span><strong id="resolvedCount">0</strong></div>
+      </div>
+
+      <div class="panel">
+        <h2>Yeni Talep Oluştur</h2>
+        <form id="ticketForm">
+          <input type="text" id="ticketTitle" placeholder="Talep başlığı" required />
+          <textarea id="ticketDescription" placeholder="Açıklama" required></textarea>
+          <select id="ticketCategory">
+            <option value="1">Donanım</option>
+            <option value="2">Yazılım</option>
+            <option value="3">Ağ ve İnternet</option>
+            <option value="4">Kullanıcı Hesabı</option>
+          </select>
+          <select id="ticketPriority">
+            <option value="Low">Düşük</option>
+            <option value="Normal" selected>Normal</option>
+            <option value="High">Yüksek</option>
+            <option value="Critical">Kritik</option>
+          </select>
+          <input type="text" id="ticketDevice" placeholder="Cihaz seri numarası (opsiyonel)" />
+          <button type="submit">Talep Oluştur</button>
+        </form>
+      </div>
+
+      <div class="panel">
+        <h2>Talep Listesi</h2>
+        <div class="filters">
+          <select id="statusFilter">
+            <option value="">Tüm durumlar</option>
+            <option value="Open">Açık</option>
+            <option value="Assigned">Atanmış</option>
+            <option value="InProgress">İşleniyor</option>
+            <option value="Resolved">Çözülmüş</option>
+            <option value="Closed">Kapandı</option>
+          </select>
+          <button id="refreshBtn" type="button">Yenile</button>
+        </div>
+        <div id="ticketList" class="ticket-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>

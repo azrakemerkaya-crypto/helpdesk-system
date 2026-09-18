@@ -1,48 +1,83 @@
 # Helpdesk System
 
-Teknik Servis ve Talep Takip Sistemi, ASP.NET Core 8 Web API ve Microsoft SQL Server kullanılarak hazırlanmıştır.
+Teknik Servis ve Talep Takip Sistemi, ASP.NET Core 8 + MSSQL ile geliştirilmiş, kullanıcı dostu bir Helpdesk çözümüdür.
 
 ## Özellikler
-- Kullanıcı kaydı ve JWT ile giriş
-- Admin, Teknik Personel ve Standart Kullanıcı rolleri
-- Talep oluşturma, listeleme ve detay görüntüleme
-- Yönetici tarafından teknik personele talep atama
-- Talep durumu ve öncelik güncelleme
-- Talep yorumları
-- Temel dashboard istatistikleri
-- Entity Framework Core ile SQL Server erişimi
+- Kullanıcı kaydı ve güvenli giriş (JWT)
+- Roller: Kullanıcı, Teknik Personel, Yönetici
+- Talep oluşturma, listeleme, durum güncelleme
+- Cihaz seri numarası takibi
+- Yorum ekleme
+- Dashboard istatistikleri
+- Statik web arayüzü
 
 ## Çalıştırma
 
-1. `appsettings.json` içindeki SQL Server bağlantısını düzenleyin.
-2. Terminalde proje klasöründe çalıştırın:
+1. SQL Server kurulu olmalıdır.
+2. Veritabanı oluştur:
+
+```sql
+CREATE DATABASE HelpdeskDb;
+```
+
+3. `appsettings.json` içindeki bağlantı dizesini kontrol edin:
+
+```json
+"DefaultConnection": "Server=(localdb)\\MSSQLLocalDB;Database=HelpdeskDb;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=True"
+```
+
+4. Uygulamayı çalıştırın:
 
 ```bash
 dotnet restore
-dotnet ef database update
+dotnet build
 dotnet run
 ```
 
-EF aracı yoksa:
+5. Tarayıcıda açın:
 
-```bash
-dotnet tool install --global dotnet-ef
+```text
+http://localhost:PORT
 ```
 
-İlk kullanıcıyı `/api/auth/register` ile oluşturabilirsiniz. İlk kullanıcıyı yönetici yapmak için veritabanındaki `Users.Role` değerini `Admin` olarak güncelleyin.
+## API örnekleri
 
-## API uçları
-- `POST /api/auth/register`
-- `POST /api/auth/login`
-- `GET /api/tickets`
-- `GET /api/tickets/{id}`
-- `POST /api/tickets`
-- `PUT /api/tickets/{id}/status`
-- `PUT /api/tickets/{id}/assign`
-- `POST /api/tickets/{id}/comments`
-- `GET /api/dashboard/summary`
+Kayıt:
 
-JWT token aldıktan sonra isteklerde `Authorization: Bearer TOKEN` başlığını kullanın.
+```http
+POST /api/auth/register
+{
+  "fullName": "Admin Kullanıcı",
+  "email": "admin@example.com",
+  "password": "123456"
+}
+```
 
-## 30 Günlük Dokümantasyon
-Günlük çalışma planı `docs/30-GUNLUK-CALISMA-PLANI.md` dosyasındadır.
+Giriş:
+
+```http
+POST /api/auth/login
+{
+  "email": "admin@example.com",
+  "password": "123456"
+}
+```
+
+Talep oluşturma:
+
+```http
+POST /api/tickets
+Authorization: Bearer <token>
+{
+  "title": "Yazıcı sorunu",
+  "description": "Yazıcı baskı yapmıyor.",
+  "categoryId": 1,
+  "priority": "High",
+  "deviceSerialNumber": "SN-001"
+}
+```
+
+## Notlar
+- İlk kullanıcı varsayılan olarak `User` rolüne sahiptir.
+- Admin rolü için veritabanında `Role` alanını `Admin` olarak güncelleyebilirsiniz.
+- Statik arayüz app.js üzerinden API'ye bağlanır.

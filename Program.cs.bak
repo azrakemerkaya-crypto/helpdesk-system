@@ -1,4 +1,4 @@
-using HelpdeskSystem.Business.Services;
+using System.Text;
 using HelpdeskSystem.Data;
 using HelpdeskSystem.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -14,12 +14,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<Microsoft.AspNetCore.Identity.IPasswordHasher<User>, Microsoft.AspNetCore.Identity.PasswordHasher<User>>();
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<ITicketService, TicketService>();
-builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 var jwt = builder.Configuration.GetSection("Jwt");
-var key = System.Text.Encoding.UTF8.GetBytes(jwt["Key"]!);
+var key = Encoding.UTF8.GetBytes(jwt["Key"]!);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -37,18 +34,4 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddAuthorization();
-builder.Services.AddCors(options => options.AddPolicy("client", p => p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
-
-var app = builder.Build();
-
-app.UseDefaultFiles();
-app.UseStaticFiles();
-app.UseCors("client");
-app.UseHttpsRedirection();
-app.UseAuthentication();
-app.UseAuthorization();
-app.MapControllers();
-app.MapGet("/api/health", () => Results.Ok(new { name = "Helpdesk System", status = "running" }));
-app.MapFallbackToFile("index.html");
-
 app.Run();
